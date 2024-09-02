@@ -1,7 +1,0 @@
-{
-    "editor.tokenColorCustomizations": {
-        "comments": "",
-        "textMateRules": []
-    },
-    "python.analysis.typeCheckingMode": "off"
-}
