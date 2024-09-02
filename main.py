@@ -38,7 +38,7 @@ ai_first = False # This determines wheter ai will play as white - changed on sta
 
 def movePiece(button: list, mouseClick: bool, keys_pressed, player_possible_moves: list):
     if keys_pressed[pygame.K_ESCAPE]:
-        return Falsed
+        return False
     else:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         poss_moves = AllMoves(button, False,board)
