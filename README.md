@@ -18,7 +18,7 @@ This is a chess game built from scratch using Python and Pygame. The game featur
 - Or if you are on Windows you can use the pychess.exe file. Make sure to download the entire depository using the git clone command or at least the Assets folder along with the .exe file. 
 ## Usage
 
-To start the game run ```python main.py``` (or the pychess.exe you downloadedp) and then choose to play as black or white in the command line.
+To start the game run ```python main.py``` (or the pychess.exe you downloaded) and then choose to play as black or white in the command line.
 
     
 ## Screenshots
