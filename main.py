@@ -14,7 +14,6 @@ PIECE_SIZE = BOARD_SIZE/8
 PIECE_OFFSET = BOARD_SIZE/8.75912409
 CORNER = (BOARD_SIZE/25, BOARD_SIZE/28) # X = 0 and Y = 1
 CIRCLE_SIZE = PIECE_SIZE/2.15
-AI_FIRST = False #This determines wheter ai will play as white
 
 CHESS_BOARD = pygame.transform.scale(pygame.image.load("Assets/board.jpg"), (BOARD_SIZE, BOARD_SIZE))
 
@@ -35,7 +34,7 @@ chessAI = opponentController.ChessAI(DIFFICULTY)
 #                                               3 if not controlled but can be moved in to (in front of a pawn)
 white_controlled = [[-1 for x in range(8)]for y in range(8)]
 black_controlled = [[-1 for x in range(8)]for y in range(8)]
-
+ai_first = False # This determines wheter ai will play as white - changed on start by the player
 
 def movePiece(button: list, mouseClick: bool, keys_pressed, player_possible_moves: list):
     if keys_pressed[pygame.K_ESCAPE]:
@@ -125,7 +124,7 @@ def drawWindow(circle_loc_index, temp_board: list):
                 if y == 0 and is_ai==0 and pieceType==0:
                     WINDOW.blit(PROMOTION_SELECTOR, (BOARD_SIZE/2-SELECTOR_LENGTH/2, BOARD_SIZE/2-SELECTOR_LENGTH/3.9195/2))
                 else:
-                    color = int(AI_FIRST != is_ai)
+                    color = int(ai_first != is_ai)
                     WINDOW.blit(pieces[color][pieceType], (CORNER[0] + x*PIECE_OFFSET, CORNER[1]+ y*PIECE_OFFSET))
             if white_controlled[y][x] != -1 and DEBUG:
                 colors = (255,0,0,50), (0,255,0,50), (0,0,255,50)
@@ -136,6 +135,11 @@ def drawWindow(circle_loc_index, temp_board: list):
 
 
 def main():
+    player_color = (input("White or Black? (w/b): ")).lower()
+    ai_first = True
+    if player_color == "w":
+        ai_first = False
+
     for color in range(2):
         pieces.append([])
         for i in range(6):
@@ -149,7 +153,7 @@ def main():
     choosing = False
     mouseClick = False
     selectedButton = -1
-    playerTurn = not AI_FIRST
+    playerTurn = not ai_first
     pause = False
     circle_loc_index = -1
 
@@ -191,7 +195,7 @@ def main():
                 elif all_black_possibleMoves==-1:
                     run = False
                     GameOver("Player")
-                else: move = chessAI.turn(board, not AI_FIRST)
+                else: move = chessAI.turn(board, not ai_first)
                 
                 #Checking whether black took its own piece...
                 try:
