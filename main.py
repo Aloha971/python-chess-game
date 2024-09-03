@@ -1,6 +1,7 @@
 import pygame
 import math
 import opponentController
+import logger
 
 
 DEBUG = False
@@ -21,12 +22,13 @@ pygame.display.set_caption("Chess")
 
 # indexes of pieces: pawn=0,bishop=1,horse=2,rook=3,queen=4,king=5; white has a prefix of 0, black 1
 # is_ai 0 is white
-# indexes for locations: [colorPrefix][pieceTypeIndex][individualPieceIndex]
+# board data: (colorPrefix, pieceTypeIndex, individualPieceIndex)
 pieces = [[]]
 PROMOTION_SELECTOR = pygame.transform.scale(pygame.image.load("Assets/selector.jpg"), (SELECTOR_LENGTH, SELECTOR_LENGTH/3.9195))
 
 board = [[(-1) for x in range(8)]for y in range(8)] # board indexes [y-vertical on screen][x] = (is_ai, piece_type, piece_index)
 chessAI = opponentController.ChessAI(DIFFICULTY)
+move_logger = logger.Logger()
 
 # Controlled cells are in the form as follows: -1 if not controlled; 
 #                                               1 if controlled actively (a piece)
@@ -68,7 +70,9 @@ def movePiece(button: list, mouseClick: bool, keys_pressed, player_possible_move
                         elif x == 2:
                             board[7][0] = -1
                             board[7][3] = (is_ai, 3, 0)
-
+                    
+                    # Add move to log
+                    move_logger.WriteMove(old_y=button[1], old_x=button[2], new_y=y, new_x=x, piece_data=button[0])
                     
                     return True
         return False
@@ -205,7 +209,9 @@ def main():
 
                 board[move[0][1]][move[0][2]] = -1
                 board[move[1][0]][move[1][1]] = move[0][0]
-
+                
+                # Log the move
+                move_logger.WriteMove(old_y=move[0][1], old_x=move[0][2], new_y=move[1][0], new_x=move[1][1], piece_data=move[0][0])
                 #Prepare for whites turn
                 player_possible_moves = PossibleMoves(0, board)
                 if player_possible_moves ==[]:
@@ -223,6 +229,7 @@ def main():
 
 def GameOver(winner: str, stalemate=False):
     drawWindow(-1, board)
+    move_logger.close()
     
     run = True
     pygame.font.init()
