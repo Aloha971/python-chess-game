@@ -78,7 +78,6 @@ class ChessAI:
             max_depth=depth
             if max_depth%2==1:
                 max_depth+=1
-            print(max_depth)
             return self.evaluateBoard(board), max_depth
         if depth==max_depth:
             return self.evaluateBoard(board), max_depth

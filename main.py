@@ -2,6 +2,7 @@ import pygame
 import math
 import opponentController
 import logger
+import gui
 
 
 DEBUG = False
@@ -17,6 +18,7 @@ CORNER = (BOARD_SIZE/25, BOARD_SIZE/28) # X = 0 and Y = 1
 CIRCLE_SIZE = PIECE_SIZE/2.15
 
 CHESS_BOARD = pygame.transform.scale(pygame.image.load("Assets/board.jpg"), (BOARD_SIZE, BOARD_SIZE))
+MAIN_MENU_IMAGE = pygame.transform.scale(pygame.image.load("Assets/mainMenu.jpg"), (BOARD_SIZE, BOARD_SIZE))
 
 pygame.display.set_caption("Chess")
 
@@ -138,20 +140,14 @@ def drawWindow(circle_loc_index, temp_board: list):
     pygame.display.update()
 
 
-def main():
+def main(clock, UI):
     global ai_first
-    player_color = (input("White or Black? (w/b): ")).lower()
-    if player_color == "b":
-        ai_first = True
-
-    for color in range(2):
-        pieces.append([])
-        for i in range(6):
-            pieces[color].append(pygame.transform.scale(pygame.image.load(f"Assets/{color}{i}.png"), (PIECE_SIZE, PIECE_SIZE)))
+    global board
+    board = [[(-1) for x in range(8)]for y in range(8)]
+    ai_first = UI.MainMenu()
     
     StartingBoard()
 
-    clock = pygame.time.Clock()
     run = True
 
     choosing = False
@@ -194,11 +190,13 @@ def main():
                 all_black_possibleMoves = PossibleMoves(1, board)
                 if all_black_possibleMoves ==[]:
                     #Stalemate
-                    run=False
-                    GameOver("None", True)
+                    run = False
+                    UI.text = "Stalemate"
+                    main(clock, UI)
                 elif all_black_possibleMoves==-1:
                     run = False
-                    GameOver("Player")
+                    UI.text = "Player WON!"
+                    main(clock, UI)
                 else: move = chessAI.turn(board, not ai_first)
                 
                 #Checking whether black took its own piece...
@@ -217,34 +215,17 @@ def main():
                 if player_possible_moves ==[]:
                     #Stalemate
                     run = False
-                    GameOver("None", True)
+                    UI.text = "Stalemate"
+                    main(clock, UI)
                 elif player_possible_moves==-1:
                     run = False
-                    GameOver("AI")
+                    UI.text = "AI WON!"
+                    main(clock, UI)
 
                 playerTurn = True
             
         if pause and mouseClick:
             pause = PickPromotion()
-
-def GameOver(winner: str, stalemate=False):
-    drawWindow(-1, board)
-    move_logger.close()
-    
-    run = True
-    pygame.font.init()
-    my_font = pygame.font.Font(None, 100)
-    if not stalemate:
-        text = my_font.render(f"{winner} won", True, (0,0,0))
-    else: text = my_font.render(f"Its a stalemate", True, (0,0,0))
-    text_rect = text.get_rect(center=(BOARD_SIZE/2, BOARD_SIZE/2))
-    while run:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-    
-        WINDOW.blit(text, text_rect)    
-        pygame.display.update()
 
 
 def PossibleMoves(is_ai: bool, temp_board: list, kingPos=-1):
@@ -665,4 +646,11 @@ def StartingBoard():
 
 
 if __name__ == "__main__":
-    main()
+    for color in range(2):
+        pieces.append([])
+        for i in range(6):
+            pieces[color].append(pygame.transform.scale(pygame.image.load(f"Assets/{color}{i}.png"), (PIECE_SIZE, PIECE_SIZE)))
+    clock = pygame.time.Clock()
+    UI = gui.UI(WINDOW, FPS, BOARD_SIZE, MAIN_MENU_IMAGE, clock, "WELCOME")
+
+    main(clock, UI)
