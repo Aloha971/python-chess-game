@@ -18,5 +18,12 @@ class Logger:
 
         self.file.write(text)
 
-    def close(self):
+    def Close(self, board):
+        text = "Final board:\n"
+        for line in board:
+            text += str(line) + "\n"
+        self.file.write(text)
         self.file.close()
+    
+    def ClearFile(self):
+        self.file = open("log.txt", 'w')

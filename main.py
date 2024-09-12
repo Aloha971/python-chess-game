@@ -6,7 +6,7 @@ import gui
 
 
 DEBUG = False
-DIFFICULTY = 10
+DIFFICULTY = 1
 
 BOARD_SIZE = 650
 SELECTOR_LENGTH = 315
@@ -145,6 +145,7 @@ def main(clock, UI):
     global board
     board = [[(-1) for x in range(8)]for y in range(8)]
     ai_first = UI.MainMenu()
+    move_logger.ClearFile()
     
     StartingBoard()
 
@@ -163,6 +164,7 @@ def main(clock, UI):
         clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                move_logger.Close(board)
                 run = False
             if event.type == pygame.MOUSEBUTTONUP:
                 mouseClick = True
