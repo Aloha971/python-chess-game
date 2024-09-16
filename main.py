@@ -200,12 +200,6 @@ def main(clock, UI):
                     UI.text = "Player WON!"
                     main(clock, UI)
                 else: move = chessAI.turn(board, not ai_first)
-                
-                #Checking whether black took its own piece...
-                try:
-                    if board[move[0][1]][move[0][2]][0]==board[move[1][0]][move[1][1]][0]:
-                        raise RuntimeError("Black took its own piece")
-                except: pass
 
                 board[move[0][1]][move[0][2]] = -1
                 board[move[1][0]][move[1][1]] = move[0][0]
@@ -218,17 +212,20 @@ def main(clock, UI):
                     #Stalemate
                     run = False
                     UI.text = "Stalemate"
+                    drawWindow(circle_loc_index, board)
                     main(clock, UI)
                 elif player_possible_moves==-1:
                     run = False
                     UI.text = "AI WON!"
+                    drawWindow(circle_loc_index, board)
                     main(clock, UI)
 
                 playerTurn = True
             
         if pause and mouseClick:
             pause = PickPromotion()
-
+            if not pause:
+                playerTurn = False
 
 def PossibleMoves(is_ai: bool, temp_board: list, kingPos=-1):
     """
